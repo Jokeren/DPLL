@@ -1,10 +1,17 @@
 #include <cxxopts.hpp>
+#include <tiny_sat.h>
 
 Solver *get_solver(const std::string &name) {
   if (name == "tiny") {
     return new TinySolver();
+  } else if (name == "random") {
+    return new RandomSolver();
+  } else if (name == "two") {
+    return new TwoClauseSolver();
   }
+  // Report error
 }
+
 
 int main(int argc, char *argv[]) {
   cxxopts::Options options("tinySAT", "minimal SAT solver implementation");
