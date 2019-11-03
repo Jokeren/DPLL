@@ -1,1 +1,1 @@
-# DPLL
+# TinySAT
