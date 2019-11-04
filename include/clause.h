@@ -49,6 +49,14 @@ class Clause {
     }
     return false;
   }
+
+  std::string to_string() const {
+    std::stringstream ss;
+    for (auto &literal : literals_) {
+      ss << literal.to_string() << " ";
+    }
+    return ss.str();
+  }
    
  private:
   std::vector<Literal> literals_;

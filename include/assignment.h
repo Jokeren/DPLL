@@ -25,7 +25,7 @@ class Assignment {
     truth_[prop] = false;
   }
 
-  std::string to_string() {
+  std::string to_string() const {
     std::stringstream ss;
     for (auto iter : truth_) {
       ss << iter.first.id() << ": " << iter.second << std::endl;

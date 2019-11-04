@@ -38,6 +38,14 @@ class Literal {
   const Proposition prop() const {
     return propsition_;
   }
+
+  std::string to_string() const {
+    if (positive_) {
+      return std::to_string(propsition_.id());
+    } else {
+      return "~" + std::to_string(propsition_.id());
+    }
+  }
    
  private:
   const Proposition propsition_;

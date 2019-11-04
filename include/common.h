@@ -9,20 +9,22 @@
   } while (0)
 
 
-#define TINY_SAT_LOG_WARNING(prefix, ...)    \
-  do {                                       \
-    fprintf(stderr, "ERROR: %s-->", prefix); \
-    fprintf(stderr, __VA_ARGS__);            \
-    fprintf(stderr, "\n");                   \
+#define TINY_SAT_LOG_WARNING(prefix, ...)  \
+  do {                                     \
+    fprintf(stderr, "ERROR: %s:%d:%s-->",  \
+      __FILE__, __LINE__, prefix);         \
+    fprintf(stderr, __VA_ARGS__);          \
+    fprintf(stderr, "\n");                 \
   } while (0)
 
 
-#define TINY_SAT_LOG_ERROR(prefix, ...)      \
-  do {                                       \
-    fprintf(stderr, "ERROR: %s-->", prefix); \
-    fprintf(stderr, __VA_ARGS__);            \
-    fprintf(stderr, "\n");                   \
-    exit(1);                                 \
+#define TINY_SAT_LOG_ERROR(prefix, ...)    \
+  do {                                     \
+    fprintf(stderr, "ERROR: %s:%d:%s-->",  \
+      __FILE__, __LINE__, prefix);         \
+    fprintf(stderr, __VA_ARGS__);          \
+    fprintf(stderr, "\n");                 \
+    exit(1);                               \
   } while (0)
 
 #endif

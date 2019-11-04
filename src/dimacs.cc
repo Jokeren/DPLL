@@ -15,7 +15,7 @@ namespace tiny_sat {
 bool DIMACS::open(const std::string &file_path) {
   input_.open(file_path, std::ifstream::in);
   if (!input_.good()) {
-    TINY_SAT_LOG_WARNING("File Reader", "Open file error!");
+    TINY_SAT_LOG_WARNING("File Reader", "open file error!");
     return false;
   }
   return true;
@@ -29,7 +29,9 @@ void DIMACS::read(CNF &cnf) {
 
   while (std::getline(input_, buf)) {
     size_t p = 0;
-    while (p < buf.size() && buf[p++] == ' ');
+    while (p < buf.size() && buf[p] == ' ') {
+      ++p;
+    }
 
     if (p == buf.size()) {
       // Skip empty lines
@@ -48,7 +50,7 @@ void DIMACS::read(CNF &cnf) {
       }
 
       if (args.size() != 4 || args[1] != "cnf") {
-        TINY_SAT_LOG_ERROR("File Reader", "Problem line error!");
+        TINY_SAT_LOG_ERROR("File Reader", "problem line error!");
       }
 
       props = std::stoi(args[2]);
@@ -64,7 +66,7 @@ void DIMACS::read(CNF &cnf) {
       }
 
       if (args.size() != props + 1 || args.back() != "0") {
-        TINY_SAT_LOG_ERROR("File Reader", "Clause line error!");
+        TINY_SAT_LOG_ERROR("File Reader", "clause line error!");
       }
 
       Clause clause;

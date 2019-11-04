@@ -48,6 +48,14 @@ class CNF {
     }
     return true;
   }
+
+  std::string to_string() const {
+    std::stringstream ss;
+    for (auto &clause : clauses_) {
+      ss << clause.to_string() << std::endl;
+    }
+    return ss.str();
+  }
    
  private:
   std::vector<Clause> clauses_;

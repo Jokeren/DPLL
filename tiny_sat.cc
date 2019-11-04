@@ -43,6 +43,10 @@ int main(int argc, char *argv[]) {
     tiny_sat::CNF cnf;
     dimacs.read(cnf);
 
+#ifdef DEBUG
+    TINY_SAT_LOG_INFO("Debug cnf", ("\n" + cnf.to_string()).c_str());
+#endif
+
     tiny_sat::Solver *solver = get_solver(solver_name);
     tiny_sat::Assignment assign;
     if (solver->solve(cnf, assign)) {
