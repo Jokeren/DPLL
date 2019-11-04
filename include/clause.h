@@ -1,8 +1,10 @@
 #ifndef TINY_SAT_CLAUSE_H
 #define TINY_SAT_CLAUSE_H
 
+#include <map>
 #include <vector>
 
+#include "common.h"
 #include "literal.h"
 
 namespace tiny_sat {
@@ -41,13 +43,14 @@ class Clause {
     return literals_.end();
   }
 
-  bool eval(const Assignment &assignment) const {
+  Evaluation eval(const Assignment &assignment) const {
     for (auto iter = literals_.begin(); iter != literals_.end(); ++iter) {
-      if (iter->eval(assignment)) {
-        return true;
+      auto ret = iter->eval(assignment);
+      if (ret == EVAL_SAT || ret == EVAL_UNDECIDED) {
+        return ret;
       }
     }
-    return false;
+    return EVAL_UNSAT;
   }
 
   std::string to_string() const {

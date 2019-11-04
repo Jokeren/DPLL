@@ -1,9 +1,10 @@
 #ifndef TINY_SAT_ASSIGNMENT_H
 #define TINY_SAT_ASSIGNMENT_H
 
-#include <map>
+#include <set>
 #include <sstream>
 
+#include "common.h"
 #include "proposition.h"
 
 
@@ -13,23 +14,31 @@ class Assignment {
  public:
   Assignment() {}
 
-  bool get(const Proposition &prop) const {
-    return truth_.find(prop) != truth_.end();
+  Evaluation get(const Proposition &prop) const {
+    auto iter = truth_.find(prop);
+    if (iter == truth_.end()) {
+      // prop not assigned
+      return EVAL_UNDECIDED;
+    } else {
+      // prop assigned
+      return iter->second ? EVAL_SAT : EVAL_UNSAT;
+    }
   }
 
-  void assign(const Proposition &prop) {
-    truth_[prop] = true;
+  void assign(const Proposition &prop, bool truth) {
+    truth_[prop] = truth;
   }
 
   void remove(const Proposition &prop) {
-    truth_[prop] = false;
+    truth_.erase(prop);
   }
 
   std::string to_string() const {
     std::stringstream ss;
     for (auto iter : truth_) {
-      ss << iter.first.id() << ": " << iter.second << std::endl;
+      ss << iter.first.id() << " : " << iter.second;
     }
+    ss << std::endl;
     return ss.str();
   }
 

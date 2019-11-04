@@ -22,11 +22,12 @@ class Literal {
     return positive_;
   }
 
-  bool eval(const Assignment &assignment) const {
-    if (assignment.get(propsition_)) {
-      return positive_;
+  Evaluation eval(const Assignment &assignment) const {
+    Evaluation truth = assignment.get(propsition_);
+    if (truth == EVAL_UNDECIDED) {
+      return truth;
     }
-    return !positive_;
+    return positive_ ? truth : (Evaluation)(1 - truth);
   }
 
   unsigned int id() const {

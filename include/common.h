@@ -27,4 +27,16 @@
     exit(1);                               \
   } while (0)
 
+
+namespace tiny_sat {
+
+enum Evaluation {
+  EVAL_UNSAT = 0,
+  EVAL_SAT = 1,
+  EVAL_UNDECIDED = 2,
+  EVAL_COUNT = 3
+};
+
+}  // namespace
+
 #endif

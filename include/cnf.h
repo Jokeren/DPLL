@@ -32,7 +32,6 @@ class CNF {
     }
   }
 
-
   void add(const Clause &&clause) {
     clauses_.emplace_back(clause);
     for (auto iter = clause.begin(); iter != clause.end(); ++iter) {
@@ -40,13 +39,25 @@ class CNF {
     }
   }
 
-  bool eval(const Assignment &assignment) const {
+  Evaluation eval(const Assignment &assignment) const {
+    bool undecided = false;
     for (auto iter = clauses_.begin(); iter != clauses_.end(); ++iter) {
-      if (!iter->eval(assignment)) {
-        return false;
+      auto ret = iter->eval(assignment);
+      if (ret == EVAL_SAT) {
+        return ret;
+      } else if (ret == EVAL_UNDECIDED) {
+        undecided = true;
       }
     }
-    return true;
+    return undecided ? EVAL_UNDECIDED : EVAL_UNSAT;
+  }
+
+  std::vector<Proposition> props() const {
+    std::vector<Proposition> prop_vec;
+    for (auto iter : props_) {
+      prop_vec.push_back(iter.first);
+    }
+    return prop_vec;
   }
 
   std::string to_string() const {
