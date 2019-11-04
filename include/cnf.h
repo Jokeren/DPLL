@@ -17,7 +17,15 @@ class CNF {
     return clauses_.end();
   }
 
-  void add(Clause &clause) {
+  std::vector<Clause>::const_iterator begin() const {
+    return clauses_.begin();
+  }
+
+  std::vector<Clause>::const_iterator end() const {
+    return clauses_.end();
+  }
+
+  void add(const Clause &clause) {
     clauses_.push_back(clause);
     for (auto iter = clause.begin(); iter != clause.end(); ++iter) {
       props_[iter->prop()].push_back(clauses_.size() - 1);
@@ -25,14 +33,14 @@ class CNF {
   }
 
 
-  void add(Clause &&clause) {
+  void add(const Clause &&clause) {
     clauses_.emplace_back(clause);
     for (auto iter = clause.begin(); iter != clause.end(); ++iter) {
       props_[iter->prop()].push_back(clauses_.size() - 1);
     }
   }
 
-  bool eval(const Assignment &assignment) {
+  bool eval(const Assignment &assignment) const {
     for (auto iter = clauses_.begin(); iter != clauses_.end(); ++iter) {
       if (!iter->eval(assignment)) {
         return false;

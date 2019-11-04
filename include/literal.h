@@ -16,31 +16,31 @@ class Literal {
   Literal(const Proposition &prop, bool positive = true) :
     propsition_(prop), positive_(positive) {}
 
-  bool positive() {
+  bool positive() const {
     // Leave zero as an undefined proposition marker
     assert(propsition_.id() != 0);
     return positive_;
   }
 
-  bool eval(const Assignment &assignment) {
+  bool eval(const Assignment &assignment) const {
     if (assignment.get(propsition_)) {
       return positive_;
     }
     return !positive_;
   }
 
-  size_t id() {
+  unsigned int id() const {
     // Leave zero as an undefined proposition marker
     assert(propsition_.id() != 0);
     return propsition_.id();
   }
 
-  Proposition prop() {
+  const Proposition prop() const {
     return propsition_;
   }
    
  private:
-  Proposition propsition_;
+  const Proposition propsition_;
   bool positive_;
 };
 

@@ -19,7 +19,7 @@ class Solver {
  public:
   explicit Solver(SolverType type) : type_(type) {}
 
-  virtual bool solve(CNF &cnf, Assignment &assign) = 0;
+  virtual bool solve(const CNF &cnf, Assignment &assign) = 0;
 
   virtual SolverType type() {
     return this->type_;
@@ -34,7 +34,7 @@ class RandomSolver : public Solver {
  public:
   RandomSolver() : Solver(RANDOM) {}
 
-  virtual bool solve(CNF &cnf, Assignment &assign);
+  virtual bool solve(const CNF &cnf, Assignment &assign);
 };
 
 
@@ -42,7 +42,7 @@ class TwoClauseSolver : public Solver {
  public:
   TwoClauseSolver() : Solver(TWO_CLAUSE) {}
 
-  virtual bool solve(CNF &cnf, Assignment &assign);
+  virtual bool solve(const CNF &cnf, Assignment &assign);
 };
 
 
@@ -50,7 +50,7 @@ class TinySolver : public Solver {
  public:
   TinySolver() : Solver(TINY) {}
 
-  virtual bool solve(CNF &cnf, Assignment &assign);
+  virtual bool solve(const CNF &cnf, Assignment &assign);
 };
 
 }  // namespace tiny_sat

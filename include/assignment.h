@@ -13,15 +13,15 @@ class Assignment {
  public:
   Assignment() {}
 
-  bool get(Proposition &prop) const {
+  bool get(const Proposition &prop) const {
     return truth_.find(prop) != truth_.end();
   }
 
-  void assign(Proposition &prop) {
+  void assign(const Proposition &prop) {
     truth_[prop] = true;
   }
 
-  void remove(Proposition &prop) {
+  void remove(const Proposition &prop) {
     truth_[prop] = false;
   }
 

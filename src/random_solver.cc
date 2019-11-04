@@ -2,7 +2,7 @@
 
 namespace tiny_sat {
 
-bool RandomSolver::solve(CNF &cnf, Assignment &assign) {
+bool RandomSolver::solve(const CNF &cnf, Assignment &assign) {
   return false;
 }
 

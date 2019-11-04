@@ -11,14 +11,14 @@ class Clause {
  public:
   Clause() {}
 
-  void add(Literal &literal) {
+  void add(const Literal &literal) {
     literals_.push_back(literal);
     for (auto iter = literals_.begin(); iter != literals_.end(); ++iter) {
       props_[iter->prop()].push_back(literals_.size() - 1);
     }
   }
 
-  void add(Literal &&literal) {
+  void add(const Literal &&literal) {
     literals_.emplace_back(literal);
     for (auto iter = literals_.begin(); iter != literals_.end(); ++iter) {
       props_[iter->prop()].push_back(literals_.size() - 1);
@@ -33,7 +33,15 @@ class Clause {
     return literals_.end();
   }
 
-  bool eval(const Assignment &assignment) {
+  std::vector<Literal>::const_iterator begin() const {
+    return literals_.begin();
+  }
+
+  std::vector<Literal>::const_iterator end() const {
+    return literals_.end();
+  }
+
+  bool eval(const Assignment &assignment) const {
     for (auto iter = literals_.begin(); iter != literals_.end(); ++iter) {
       if (iter->eval(assignment)) {
         return true;
