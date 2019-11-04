@@ -1,13 +1,17 @@
-#include <cxxopts.hpp>
 #include <tiny_sat.h>
 
-Solver *get_solver(const std::string &name) {
+#include <string>
+
+#include <cxxopts.hpp>
+
+
+tiny_sat::Solver *get_solver(const std::string &name) {
   if (name == "tiny") {
-    return new TinySolver();
+    return new tiny_sat::TinySolver();
   } else if (name == "random") {
-    return new RandomSolver();
+    return new tiny_sat::RandomSolver();
   } else if (name == "two") {
-    return new TwoClauseSolver();
+    return new tiny_sat::TwoClauseSolver();
   }
   // Report error
 }
@@ -18,7 +22,7 @@ int main(int argc, char *argv[]) {
   options.add_options()
     ("i,input", "Input path of a DIMACS file", cxxopts::value<std::string>())
     ("s,solver", "Choose a SAT solver (default tiny):\nRandom solver (random)\nTwo clause solver (two)\nTiny solver (tine)n",
-     cxxopts::value(std::string>("tiny")))
+     cxxopts::value<std::string>()->default_value("tiny"))
     ("h,help", "tinySAT help");
 
   if (argc == 1) {
@@ -34,14 +38,17 @@ int main(int argc, char *argv[]) {
   std::string input = result["i"].count() ? result["i"].as<std::string>() : result["input"].as<std::string>();
   std::string solver_name = result["s"].count() ? result["s"].as<std::string>() : result["solver"].as<std::string>();
 
-  DIMACS dimacs;
+  tiny_sat::DIMACS dimacs;
   if (dimacs.open(input)) {
-    CNF cnf;
+    tiny_sat::CNF cnf;
     dimacs.read(cnf);
 
-    Solver *solver = get_solver(solver_name);
-    if (solver->solve(cnf)) {
+    tiny_sat::Solver *solver = get_solver(solver_name);
+    tiny_sat::Assignment assign;
+    if (solver->solve(cnf, assign)) {
+      TINY_SAT_LOG_INFO("Result", assign.to_string().c_str());
     } else {
+      TINY_SAT_LOG_INFO("Result", "UNSAT");
     }
   }  
 

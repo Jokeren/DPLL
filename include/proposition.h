@@ -5,14 +5,18 @@ namespace tiny_sat {
 
 class Proposition {
  public:
-  explicit Proposition(size_t id) : id_(id) {}
+  explicit Proposition(unsigned int id) : id_(id) {}
 
-  size_t id() : {
+  unsigned int id() const {
     return this->id_;
+  }
+
+  bool operator < (const Proposition &other) const {
+    return this->id_ < other.id_;
   }
    
  private:
-  size_t id_;
+  unsigned int id_;
 };
 
 }  // namespace tiny_sat

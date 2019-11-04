@@ -2,6 +2,10 @@
 #define TINY_SAT_LITERAL_H
 
 #include "proposition.h"
+#include "assignment.h"
+
+#include <cassert>
+
 
 namespace tiny_sat {
 
@@ -14,19 +18,30 @@ class Literal {
 
   bool positive() {
     // Leave zero as an undefined proposition marker
-    assert(this->propsition_->id() != 0);
+    assert(propsition_.id() != 0);
     return positive_;
   }
 
-  size_t id() : {
+  bool eval(const Assignment &assignment) {
+    if (assignment.get(propsition_)) {
+      return positive_;
+    }
+    return !positive_;
+  }
+
+  size_t id() {
     // Leave zero as an undefined proposition marker
-    assert(this->propsition_->id() != 0);
-    return this->propsition_->id();
+    assert(propsition_.id() != 0);
+    return propsition_.id();
+  }
+
+  Proposition prop() {
+    return propsition_;
   }
    
  private:
   Proposition propsition_;
-  bool negative_;
+  bool positive_;
 };
 
 }  // namespace tiny_sat

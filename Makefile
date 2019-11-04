@@ -25,6 +25,14 @@ endif
 ifdef SIMD
 OFLAGS += -m$(SIMD)
 endif
+
+ifdef CPU
+OFLAGS += -mcpu=$(CPU)
+endif
+
+ifdef TUNE
+OFLAGS += -mtune=$(TUNE)
+endif
 endif
 
 CFLAGS := -std=c++11 $(OFLAGS)
@@ -47,7 +55,7 @@ $(LIB_DIR):
 	mkdir -p $@
 
 $(BINS): % : %.cc $(LIB)
-	$(MCXX) $(CFLAGS) -I$(INC_DIR) $^ -o $@ $(LDFLAGS) -L$(LIB_DIR)
+	$(MCXX) $(CFLAGS) -I$(INC_DIR) -I$(CXXOPTS) $^ -o $@ $(LDFLAGS) -L$(LIB_DIR)
 
 $(LIB): $(OBJECTS)
 	ar crf $@ $^ 
