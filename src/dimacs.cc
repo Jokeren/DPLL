@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <random>
 
 #include <cstdlib>
 
@@ -13,7 +14,7 @@
 namespace tiny_sat {
 
 bool DIMACS::open(const std::string &file_path) {
-  file_.open(file_path, std::ifstream::in);
+  file_.open(file_path, std::fstream::in | std::fstream::out | std::fstream::trunc);
   if (!file_.good()) {
     TINY_SAT_LOG_WARNING("File Reader", "open file error!");
     return false;
@@ -83,6 +84,31 @@ void DIMACS::read(CNF &cnf) {
 
 
 void DIMACS::generate(int propositions, int clauses, int literals) {
+  std::mt19937 generator;
+  std::uniform_int_distribution<int> distribution(-propositions, propositions);
+  std::set<std::set<int> > dict;
+  std::set<int> clause;
+  std::stringstream ss;
+
+  ss << "p cnf " << propositions << " " << clauses << std::endl;
+  for (size_t i = 0; i < clauses; ++i) {
+    do {
+      clause.clear();
+      while (clause.size() != literals) {
+        int num = distribution(generator);
+        if (clause.find(num) == clause.end()) {
+          clause.insert(num);
+        }
+      }
+    } while (dict.find(clause) != dict.end());
+
+    for (auto l : clause) {
+      ss << l << " ";
+    }
+    ss << "0" << std::endl;
+  }
+
+  file_ << ss.str() << std::endl;
 }
 
 }  // namespace tiny_sat

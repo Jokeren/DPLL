@@ -24,7 +24,7 @@ class DIMACS {
   }
    
  private:
-  std::ifstream file_;
+  std::fstream file_;
 };
 
 }  // namespace tiny_sat
