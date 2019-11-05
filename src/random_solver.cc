@@ -27,7 +27,10 @@ bool RandomSolver::solve_impl(const CNF &cnf, Assignment &assign) {
     return true;
   }
   assign.assign(prop, false);
-  return solve_impl(cnf, assign);
+  bool ret = solve_impl(cnf, assign);
+  assign.remove(prop);
+  props_.push_back(prop);
+  return ret;
 }
 
 

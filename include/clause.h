@@ -44,13 +44,16 @@ class Clause {
   }
 
   Evaluation eval(const Assignment &assignment) const {
+    bool undecided = false;
     for (auto iter = literals_.begin(); iter != literals_.end(); ++iter) {
       auto ret = iter->eval(assignment);
-      if (ret == EVAL_SAT || ret == EVAL_UNDECIDED) {
+      if (ret == EVAL_SAT) {
         return ret;
+      } else if (ret == EVAL_UNDECIDED) {
+        undecided = true;
       }
     }
-    return EVAL_UNSAT;
+    return undecided ? EVAL_UNDECIDED : EVAL_UNSAT;
   }
 
   std::string to_string() const {

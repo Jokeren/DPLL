@@ -43,13 +43,13 @@ class CNF {
     bool undecided = false;
     for (auto iter = clauses_.begin(); iter != clauses_.end(); ++iter) {
       auto ret = iter->eval(assignment);
-      if (ret == EVAL_SAT) {
+      if (ret == EVAL_UNSAT) {
         return ret;
       } else if (ret == EVAL_UNDECIDED) {
         undecided = true;
       }
     }
-    return undecided ? EVAL_UNDECIDED : EVAL_UNSAT;
+    return undecided ? EVAL_UNDECIDED : EVAL_SAT;
   }
 
   std::vector<Proposition> props() const {
