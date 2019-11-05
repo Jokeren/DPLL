@@ -13,8 +13,8 @@
 namespace tiny_sat {
 
 bool DIMACS::open(const std::string &file_path) {
-  input_.open(file_path, std::ifstream::in);
-  if (!input_.good()) {
+  file_.open(file_path, std::ifstream::in);
+  if (!file_.good()) {
     TINY_SAT_LOG_WARNING("File Reader", "open file error!");
     return false;
   }
@@ -27,7 +27,7 @@ void DIMACS::read(CNF &cnf) {
   int props = 0;
   int clauses = 0;
 
-  while (std::getline(input_, buf)) {
+  while (std::getline(file_, buf)) {
     size_t p = 0;
     while (p < buf.size() && buf[p] == ' ') {
       ++p;
@@ -45,7 +45,7 @@ void DIMACS::read(CNF &cnf) {
       std::string s;
       std::vector<std::string> args;
       
-      while (std::getline(ss, s, ' ')) {
+      while (ss >> s) {
         args.push_back(s);
       }
 
@@ -61,11 +61,11 @@ void DIMACS::read(CNF &cnf) {
       std::string s;
       std::vector<std::string> args;
       
-      while (std::getline(ss, s, ' ')) {
+      while (ss >> s) {
         args.push_back(s);
       }
 
-      if (args.size() != props + 1 || args.back() != "0") {
+      if (args.back() != "0") {
         TINY_SAT_LOG_ERROR("File Reader", "clause line error!");
       }
 
@@ -79,6 +79,10 @@ void DIMACS::read(CNF &cnf) {
       cnf.add(clause);
     }
   }
+}
+
+
+void DIMACS::generate(int propositions, int clauses, int literals) {
 }
 
 }  // namespace tiny_sat

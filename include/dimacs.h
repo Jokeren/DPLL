@@ -15,14 +15,16 @@ class DIMACS {
 
   void read(CNF &cnf);
 
+  void generate(int propositions, int clauses, int literals);
+
   ~DIMACS() {
-    if (input_.is_open()) {
-      input_.close();
+    if (file_.is_open()) {
+      file_.close();
     }
   }
    
  private:
-  std::ifstream input_;
+  std::ifstream file_;
 };
 
 }  // namespace tiny_sat
