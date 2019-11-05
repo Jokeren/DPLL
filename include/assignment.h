@@ -36,9 +36,8 @@ class Assignment {
   std::string to_string() const {
     std::stringstream ss;
     for (auto iter : truth_) {
-      ss << iter.first.id() << " : " << iter.second;
+      ss << iter.first.id() << " : " << iter.second << std::endl;
     }
-    ss << std::endl;
     return ss.str();
   }
 

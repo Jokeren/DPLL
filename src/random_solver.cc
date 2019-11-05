@@ -1,9 +1,16 @@
 #include "solver.h"
 
+#include <random>
+
 namespace tiny_sat {
 
 Proposition RandomSolver::choose(const CNF &cnf, Assignment &assign) {
-  return Proposition(0);
+  std::uniform_int_distribution<size_t> distribution(0, props_.size() - 1);
+  auto index = distribution(generator_);
+  auto prop = props_[index];
+  props_.erase(props_.begin() + index);
+
+  return prop;
 }
 
 
@@ -25,7 +32,7 @@ bool RandomSolver::solve_impl(const CNF &cnf, Assignment &assign) {
 
 
 bool RandomSolver::solve(const CNF &cnf, Assignment &assign) {
-  std::vector<Proposition> props = cnf.props();
+  props_ = cnf.props();
   return solve_impl(cnf, assign);
 }
 

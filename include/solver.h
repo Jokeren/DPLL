@@ -1,6 +1,10 @@
 #ifndef TINY_SAT_SOLVER_H
 #define TINY_SAT_SOLVER_H
 
+#include <queue>
+#include <vector>
+#include <random>
+
 #include "cnf.h"
 #include "assignment.h"
 
@@ -8,10 +12,10 @@
 namespace tiny_sat {
 
 enum SolverType {
-  RANDOM = 0,
-  TWO_CLAUSE = 1,
-  TINY = 2,
-  SOLVER_TYPE_COUNT = 3
+  SOLVER_RANDOM = 0,
+  SOLVER_TWO_CLAUSE = 1,
+  SOLVER_TINY = 2,
+  SOLVER_SOLVER_TYPE_COUNT = 3
 };
 
 
@@ -34,7 +38,7 @@ class Solver {
 
 class RandomSolver : public Solver {
  public:
-  RandomSolver() : Solver(RANDOM) {}
+  RandomSolver() : Solver(SOLVER_RANDOM) {}
 
   virtual bool solve(const CNF &cnf, Assignment &assign);
  
@@ -43,12 +47,16 @@ class RandomSolver : public Solver {
  
  private:
   bool solve_impl(const CNF &cnf, Assignment &assign);
+
+ private:
+  std::mt19937 generator_;
+  std::vector<Proposition> props_;
 };
 
 
 class TwoClauseSolver : public Solver {
  public:
-  TwoClauseSolver() : Solver(TWO_CLAUSE) {}
+  TwoClauseSolver() : Solver(SOLVER_TWO_CLAUSE) {}
 
   virtual bool solve(const CNF &cnf, Assignment &assign);
  
@@ -59,7 +67,7 @@ class TwoClauseSolver : public Solver {
 
 class TinySolver : public Solver {
  public:
-  TinySolver() : Solver(TINY) {}
+  TinySolver() : Solver(SOLVER_TINY) {}
 
   virtual bool solve(const CNF &cnf, Assignment &assign);
  

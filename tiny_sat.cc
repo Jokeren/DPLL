@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     tiny_sat::Solver *solver = get_solver(solver_name);
     tiny_sat::Assignment assign;
     if (solver->solve(cnf, assign)) {
-      TINY_SAT_LOG_INFO("Result", assign.to_string().c_str());
+      TINY_SAT_LOG_INFO("Result", ("\n" + assign.to_string()).c_str());
     } else {
       TINY_SAT_LOG_INFO("Result", "UNSAT");
     }
