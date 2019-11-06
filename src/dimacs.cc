@@ -14,7 +14,8 @@
 namespace tiny_sat {
 
 bool DIMACS::open(const std::string &file_path) {
-  file_.open(file_path, std::fstream::in | std::fstream::out | std::fstream::trunc);
+  file_.open(file_path, std::ios::in | std::ios::out | std::ios::app);
+
   if (!file_.good()) {
     TINY_SAT_LOG_WARNING("File Reader", "open file error!");
     return false;
@@ -96,7 +97,10 @@ void DIMACS::generate(int propositions, int clauses, int literals) {
       clause.clear();
       while (clause.size() != literals) {
         int num = distribution(generator);
-        if (clause.find(num) == clause.end()) {
+        if (num == 0) {
+          continue;
+        }
+        if (clause.find(num) == clause.end() && clause.find(-num) == clause.end()) {
           clause.insert(num);
         }
       }

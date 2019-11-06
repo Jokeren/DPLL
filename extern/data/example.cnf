@@ -1,6 +1,6 @@
 c A dimacs example
 c
-p cnf 5 4
+p cnf 5 9
 1 2 4 0
 -1 2 3 0
 1 -2 3 0

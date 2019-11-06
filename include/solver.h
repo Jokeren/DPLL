@@ -31,6 +31,8 @@ class Solver {
  
  protected:
   virtual Proposition choose(const CNF &cnf, Assignment &assign) = 0;
+ 
+  virtual bool solve_impl(const CNF &cnf, Assignment &assign) = 0;
 
   SolverType type_;
 };
@@ -62,6 +64,11 @@ class TwoClauseSolver : public Solver {
  
  protected:
   virtual Proposition choose(const CNF &cnf, Assignment &assign);
+ 
+  virtual bool solve_impl(const CNF &cnf, Assignment &assign);
+
+ private:
+  std::mt19937 generator_;
 };
 
 
@@ -73,6 +80,8 @@ class TinySolver : public Solver {
  
  protected:
   virtual Proposition choose(const CNF &cnf, Assignment &assign);
+ 
+  virtual bool solve_impl(const CNF &cnf, Assignment &assign);
 };
 
 }  // namespace tiny_sat
