@@ -5,6 +5,7 @@
 #include <vector>
 #include <random>
 
+#include "buffer.h"
 #include "cnf.h"
 #include "assignment.h"
 
@@ -52,7 +53,7 @@ class RandomSolver : public Solver {
 
  private:
   std::mt19937 generator_;
-  std::vector<Proposition> props_;
+  Buffer<Proposition> props_;
 };
 
 

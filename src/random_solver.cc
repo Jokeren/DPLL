@@ -7,8 +7,8 @@ namespace tiny_sat {
 Proposition RandomSolver::choose(const CNF &cnf, Assignment &assign) {
   std::uniform_int_distribution<size_t> distribution(0, props_.size() - 1);
   auto index = distribution(generator_);
-  auto prop = props_[index];
-  props_.erase(props_.begin() + index);
+  auto prop = props_.get(index);
+  props_.remove(index);
 
   return prop;
 }
@@ -29,13 +29,16 @@ bool RandomSolver::solve_impl(const CNF &cnf, Assignment &assign) {
   assign.assign(prop, false);
   bool ret = solve_impl(cnf, assign);
   assign.remove(prop);
-  props_.push_back(prop);
+  props_.add(prop);
   return ret;
 }
 
 
 bool RandomSolver::solve(const CNF &cnf, Assignment &assign) {
-  props_ = cnf.props();
+  auto props = cnf.props();
+  for (auto &prop : props) {
+    props_.add(prop);
+  }
   return solve_impl(cnf, assign);
 }
 
