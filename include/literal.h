@@ -11,14 +11,14 @@ namespace tiny_sat {
 
 class Literal {
  public:
-  Literal() : propsition_(Proposition(0)), positive_(true) {}
+  Literal() : propsition_(0), positive_(true) {}
 
   Literal(const Proposition &prop, bool positive = true) :
     propsition_(prop), positive_(positive) {}
 
   bool positive() const {
     // Leave zero as an undefined proposition marker
-    assert(propsition_.id() != 0);
+    assert(propsition_ != 0);
     return positive_;
   }
 
@@ -32,8 +32,8 @@ class Literal {
 
   unsigned int id() const {
     // Leave zero as an undefined proposition marker
-    assert(propsition_.id() != 0);
-    return propsition_.id();
+    assert(propsition_ != 0);
+    return propsition_;
   }
 
   const Proposition prop() const {
@@ -42,9 +42,9 @@ class Literal {
 
   std::string to_string() const {
     if (positive_) {
-      return std::to_string(propsition_.id());
+      return std::to_string(propsition_);
     } else {
-      return "~" + std::to_string(propsition_.id());
+      return "~" + std::to_string(propsition_);
     }
   }
    

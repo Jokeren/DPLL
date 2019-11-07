@@ -3,23 +3,7 @@
 
 namespace tiny_sat {
 
-class Proposition {
- public:
-  Proposition() : id_(0) {}
-
-  explicit Proposition(unsigned int id) : id_(id) {}
-
-  unsigned int id() const {
-    return this->id_;
-  }
-
-  bool operator < (const Proposition &other) const {
-    return this->id_ < other.id_;
-  }
-   
- private:
-  unsigned int id_;
-};
+typedef unsigned int Proposition;
 
 }  // namespace tiny_sat
 

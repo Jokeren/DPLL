@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <set>
 #include <vector>
 #include <random>
 
@@ -76,7 +77,7 @@ void DIMACS::read(CNF &cnf) {
         auto &arg = args[i];
         int prop = std::stoi(arg);
         bool positive = prop < 0 ? false : true;
-        clause.add(Literal(Proposition(abs(prop)), positive));
+        clause.add(Literal(abs(prop), positive));
       }
       cnf.add(clause);
     }

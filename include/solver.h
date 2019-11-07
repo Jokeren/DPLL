@@ -4,8 +4,9 @@
 #include <queue>
 #include <vector>
 #include <random>
+#include <set>
 
-#include "buffer.h"
+#include "path.h"
 #include "cnf.h"
 #include "assignment.h"
 
@@ -33,8 +34,6 @@ class Solver {
  protected:
   virtual Proposition choose(const CNF &cnf, Assignment &assign) = 0;
  
-  virtual bool solve_impl(const CNF &cnf, Assignment &assign) = 0;
-
   SolverType type_;
 };
 
@@ -49,11 +48,14 @@ class RandomSolver : public Solver {
   virtual Proposition choose(const CNF &cnf, Assignment &assign);
  
  private:
-  bool solve_impl(const CNF &cnf, Assignment &assign);
+  bool solve_impl(const CNF &cnf, Assignment &assign, Proposition prop);
 
  private:
   std::mt19937 generator_;
-  Buffer<Proposition> props_;
+  Path<Proposition> props_;
+  Path<size_t> sats_;
+  Path<bool> determined_clause_index_;
+  size_t determined_clauses_;
 };
 
 
@@ -66,7 +68,7 @@ class TwoClauseSolver : public Solver {
  protected:
   virtual Proposition choose(const CNF &cnf, Assignment &assign);
  
-  virtual bool solve_impl(const CNF &cnf, Assignment &assign);
+  bool solve_impl(const CNF &cnf, Assignment &assign);
 
  private:
   std::mt19937 generator_;
@@ -82,7 +84,7 @@ class TinySolver : public Solver {
  protected:
   virtual Proposition choose(const CNF &cnf, Assignment &assign);
  
-  virtual bool solve_impl(const CNF &cnf, Assignment &assign);
+  bool solve_impl(const CNF &cnf, Assignment &assign);
 };
 
 }  // namespace tiny_sat

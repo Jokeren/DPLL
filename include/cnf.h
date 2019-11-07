@@ -2,12 +2,17 @@
 #define TINY_SAT_CNF_H
 
 #include "clause.h"
+#include "path.h"
 
 namespace tiny_sat {
 
 class CNF {
  public:
   CNF() {}
+
+  size_t size() const {
+    return this->clauses_.size();
+  }
 
   std::vector<Clause>::iterator begin() {
     return clauses_.begin();
@@ -50,6 +55,28 @@ class CNF {
       }
     }
     return undecided ? EVAL_UNDECIDED : EVAL_SAT;
+  }
+
+  Evaluation eval(const Assignment &assignment, const Proposition &prop,
+    const Path<bool> &determined, Path<size_t> &sats) const {
+    bool unsat = false;
+    bool undecided = false;
+    auto iter = props_.find(prop);
+    for (auto i : iter->second) {
+      if (determined[i]) {
+        continue;
+      }
+      auto &clause = clauses_[i];
+      auto ret = clause.eval(assignment);
+      if (ret == EVAL_UNSAT) {
+        unsat = true;
+      } else if (ret == EVAL_UNDECIDED) {
+        undecided = true;
+      } else {
+        sats.push_back(i);
+      }
+    }
+    return unsat ? EVAL_UNSAT : (undecided ? EVAL_UNDECIDED : EVAL_SAT);
   }
 
   std::vector<Proposition> props() const {

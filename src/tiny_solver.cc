@@ -3,7 +3,7 @@
 namespace tiny_sat {
 
 Proposition TinySolver::choose(const CNF &cnf, Assignment &assign) {
-  return Proposition(0);
+  return 0;
 }
 
 bool TinySolver::solve_impl(const CNF &cnf, Assignment &assign) {

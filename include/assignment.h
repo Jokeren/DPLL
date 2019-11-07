@@ -1,7 +1,7 @@
 #ifndef TINY_SAT_ASSIGNMENT_H
 #define TINY_SAT_ASSIGNMENT_H
 
-#include <set>
+#include <unordered_map>
 #include <sstream>
 
 #include "common.h"
@@ -37,14 +37,14 @@ class Assignment {
     std::stringstream ss;
     for (auto iter : truth_) {
       if (iter.second) {
-        ss << iter.first.id() << " : " << iter.second << std::endl;
+        ss << iter.first << " : " << iter.second << std::endl;
       }
     }
     return ss.str();
   }
 
  private:
-  std::map<Proposition, bool> truth_;
+  std::unordered_map<Proposition, bool> truth_;
 };
 
 }  // namespace tiny_sat
