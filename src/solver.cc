@@ -51,7 +51,7 @@ bool Solver::solve_impl(Assignment &assign, Proposition prop) {
 
 
 bool Solver::solve(const CNF &cnf, Assignment &assign) {
-  this->db_.init(cnf);
+  this->init(cnf);
   Proposition prop = 0;
   return solve_impl(assign, prop);
 }

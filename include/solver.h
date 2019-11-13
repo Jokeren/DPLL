@@ -35,6 +35,8 @@ class Solver {
   }
 
  protected:
+  virtual void init(const CNF &cnf) = 0;
+
   virtual Proposition choose(Assignment &assign) = 0;
  
  protected:
@@ -49,6 +51,8 @@ class RandomSolver : public Solver {
   RandomSolver() : Solver(SOLVER_RANDOM) {}
  
  protected:
+  virtual void init(const CNF &cnf);
+
   virtual Proposition choose(Assignment &assign);
 };
 
@@ -58,6 +62,8 @@ class TwoClauseSolver : public Solver {
   TwoClauseSolver() : Solver(SOLVER_TWO_CLAUSE) {}
 
  protected:
+  virtual void init(const CNF &cnf);
+
   virtual Proposition choose(Assignment &assign);
 
  private:
@@ -71,6 +77,8 @@ class TinySolver : public Solver {
   TinySolver() : Solver(SOLVER_TINY) {}
 
  protected:
+  virtual void init(const CNF &cnf);
+
   virtual Proposition choose(Assignment &assign);
 };
 

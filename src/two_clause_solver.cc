@@ -5,6 +5,11 @@
 
 namespace tiny_sat {
 
+void TwoClauseSolver::init(const CNF &cnf) {
+  this->db_.init(cnf);
+}
+
+
 Proposition TwoClauseSolver::choose(Assignment &assign) {
   Proposition prop = 0;
   size_t max_clause = 0;
