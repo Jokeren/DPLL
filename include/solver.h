@@ -6,9 +6,10 @@
 #include <random>
 #include <set>
 
-#include "path.h"
-#include "cnf.h"
 #include "assignment.h"
+#include "cnf.h"
+#include "database.h"
+#include "path.h"
 
 
 namespace tiny_sat {
@@ -25,35 +26,30 @@ class Solver {
  public:
   explicit Solver(SolverType type) : type_(type) {}
 
-  virtual bool solve(const CNF &cnf, Assignment &assign) = 0;
+  virtual bool solve(const CNF &cnf, Assignment &assign);
+
+  virtual bool solve_impl(Assignment &assign, Proposition prop);
 
   virtual SolverType type() {
     return this->type_;
   }
+
+ protected:
+  virtual Proposition choose(Assignment &assign) = 0;
  
  protected:
   SolverType type_;
+  Database db_;
+  std::mt19937 generator_;
 };
 
 
 class RandomSolver : public Solver {
  public:
   RandomSolver() : Solver(SOLVER_RANDOM) {}
-
-  virtual bool solve(const CNF &cnf, Assignment &assign);
  
  protected:
-  virtual Proposition choose(const CNF &cnf, Assignment &assign);
- 
- private:
-  bool solve_impl(const CNF &cnf, Assignment &assign, Proposition prop);
-
- private:
-  std::mt19937 generator_;
-  Path<Proposition> props_;
-  Path<size_t> sats_;
-  Path<bool> determined_clause_index_;
-  size_t determined_clauses_;
+  virtual Proposition choose(Assignment &assign);
 };
 
 
@@ -61,37 +57,12 @@ class TwoClauseSolver : public Solver {
  public:
   TwoClauseSolver() : Solver(SOLVER_TWO_CLAUSE) {}
 
-  virtual bool solve(const CNF &cnf, Assignment &assign);
- 
  protected:
-  virtual Proposition choose(const CNF &cnf, Assignment &assign);
- 
- private:
-  bool solve_impl(const CNF &cnf, Assignment &assign, Proposition prop);
+  virtual Proposition choose(Assignment &assign);
 
  private:
-  std::mt19937 generator_;
-  std::set<Proposition> props_;
-  Path<Proposition> candidates_;
-  Path<size_t> sats_;
-  Path<bool> determined_clause_index_;
-  size_t determined_clauses_;
-  std::set<size_t> two_sats_;
-  std::map<Proposition, size_t> prop_clauses_;
-};
-
-
-struct Frequency {
-  Proposition prop;
-  int freq;
-
-  Frequency() : prop(0), freq(0) {}
-
-  Frequency(Proposition prop, int freq) : prop(prop), freq(freq) {}
-
-  bool operator < (struct Frequency &other) const {
-    return freq > other.freq;
-  }
+  std::map<Proposition, size_t> two_clause_props_;
+  std::vector<Proposition> candidates_;
 };
 
 
@@ -99,22 +70,8 @@ class TinySolver : public Solver {
  public:
   TinySolver() : Solver(SOLVER_TINY) {}
 
-  virtual bool solve(const CNF &cnf, Assignment &assign);
- 
  protected:
-  Proposition choose(const CNF &cnf, Assignment &assign, std::vector<int> &frequency);
- 
- private:
-  bool solve_impl(const CNF &cnf, Assignment &assign, Proposition prop, std::vector<int> frequency);
-
- private:
-  std::mt19937 generator_;
-  std::set<Proposition> props_;
-  Path<Proposition> candidates_;
-  Path<size_t> sats_;
-  Path<bool> determined_clause_index_;
-  size_t determined_clauses_;
-  std::map<Proposition, size_t> prop_clauses_;
+  virtual Proposition choose(Assignment &assign);
 };
 
 }  // namespace tiny_sat
