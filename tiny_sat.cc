@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
       TINY_SAT_LOG_INFO("Debug cnf", ("\n" + cnf.to_string()).c_str());
 #endif
       tiny_sat::Solver *solver = get_solver(solver_name);
-      tiny_sat::Assignment assign;
+      tiny_sat::Assignment assign(cnf.size());
       if (solver->solve(cnf, assign)) {
         TINY_SAT_LOG_INFO("Result", ("\n" + assign.to_string()).c_str());
       } else {

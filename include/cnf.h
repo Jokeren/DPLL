@@ -14,6 +14,17 @@ class CNF {
     return this->clauses_.size();
   }
 
+  const Clause &get(size_t index) const {
+    return this->clauses_[index];
+  }
+
+  void get_clauses(Proposition &prop, std::vector<size_t> &clauses) const {
+    auto iter = this->props_.find(prop);
+    if (iter != this->props_.end()) {
+      clauses = iter->second;
+    }
+  }
+
   std::vector<Clause>::iterator begin() {
     return clauses_.begin();
   }
@@ -62,7 +73,7 @@ class CNF {
     bool unsat = false;
     bool undecided = false;
     auto iter = props_.find(prop);
-    for (auto i : iter->second) {
+    for (size_t i : iter->second) {
       if (determined[i]) {
         continue;
       }

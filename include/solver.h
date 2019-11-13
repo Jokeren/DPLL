@@ -32,8 +32,6 @@ class Solver {
   }
  
  protected:
-  virtual Proposition choose(const CNF &cnf, Assignment &assign) = 0;
- 
   SolverType type_;
 };
 
@@ -68,10 +66,32 @@ class TwoClauseSolver : public Solver {
  protected:
   virtual Proposition choose(const CNF &cnf, Assignment &assign);
  
-  bool solve_impl(const CNF &cnf, Assignment &assign);
+ private:
+  bool solve_impl(const CNF &cnf, Assignment &assign, Proposition prop);
 
  private:
   std::mt19937 generator_;
+  std::set<Proposition> props_;
+  Path<Proposition> candidates_;
+  Path<size_t> sats_;
+  Path<bool> determined_clause_index_;
+  size_t determined_clauses_;
+  std::set<size_t> two_sats_;
+  std::map<Proposition, size_t> prop_clauses_;
+};
+
+
+struct Frequency {
+  Proposition prop;
+  int freq;
+
+  Frequency() : prop(0), freq(0) {}
+
+  Frequency(Proposition prop, int freq) : prop(prop), freq(freq) {}
+
+  bool operator < (struct Frequency &other) const {
+    return freq > other.freq;
+  }
 };
 
 
@@ -82,9 +102,19 @@ class TinySolver : public Solver {
   virtual bool solve(const CNF &cnf, Assignment &assign);
  
  protected:
-  virtual Proposition choose(const CNF &cnf, Assignment &assign);
+  Proposition choose(const CNF &cnf, Assignment &assign, std::vector<int> &frequency);
  
-  bool solve_impl(const CNF &cnf, Assignment &assign);
+ private:
+  bool solve_impl(const CNF &cnf, Assignment &assign, Proposition prop, std::vector<int> frequency);
+
+ private:
+  std::mt19937 generator_;
+  std::set<Proposition> props_;
+  Path<Proposition> candidates_;
+  Path<size_t> sats_;
+  Path<bool> determined_clause_index_;
+  size_t determined_clauses_;
+  std::map<Proposition, size_t> prop_clauses_;
 };
 
 }  // namespace tiny_sat

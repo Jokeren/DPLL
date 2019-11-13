@@ -29,6 +29,7 @@ void DIMACS::read(CNF &cnf) {
   std::string buf;
   int props = 0;
   int clauses = 0;
+  size_t clause_index = 0;
 
   while (std::getline(file_, buf)) {
     size_t p = 0;
@@ -72,7 +73,7 @@ void DIMACS::read(CNF &cnf) {
         TINY_SAT_LOG_ERROR("File Reader", "clause line error!");
       }
 
-      Clause clause;
+      Clause clause(clause_index++);
       for (size_t i = 0; i < args.size() - 1; ++i) {
         auto &arg = args[i];
         int prop = std::stoi(arg);

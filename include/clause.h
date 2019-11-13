@@ -11,7 +11,11 @@ namespace tiny_sat {
 
 class Clause {
  public:
-  Clause() {}
+  Clause(size_t index = 0) : index_(index) {}
+
+  size_t index() const {
+    return index_;
+  }
 
   void add(const Literal &literal) {
     literals_.push_back(literal);
@@ -65,6 +69,8 @@ class Clause {
   }
    
  private:
+  size_t index_;
+
   std::vector<Literal> literals_;
   // Proposition->literal index
   std::map<Proposition, std::vector<size_t> > props_;

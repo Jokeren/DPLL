@@ -20,13 +20,14 @@ class Path {
     return entries_[index];
   }
 
-  void push_back(T &value) {
-    std::cout << "size_ " << size_ << " capacity " << capacity_ << std::endl;
+  void push_back(const T &value) {
     entries_[size_++] = value;
     if (size_ == capacity_) {
       reserve(capacity_ * 2);
     }
-    std::cout << "size_ " << size_ << " capacity " << capacity_ << std::endl;
+#if 0
+    std::cout << "size_ " << size_ << " capacity " << capacity_ <<  " value " << value << std::endl;
+#endif
   }
 
   T pop_back() {

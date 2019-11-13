@@ -1,50 +1,47 @@
 #ifndef TINY_SAT_ASSIGNMENT_H
 #define TINY_SAT_ASSIGNMENT_H
 
-#include <unordered_map>
 #include <sstream>
 
 #include "common.h"
 #include "proposition.h"
+#include "path.h"
 
 
 namespace tiny_sat {
 
 class Assignment {
  public:
-  Assignment() {}
-
-  Evaluation get(const Proposition &prop) const {
-    auto iter = truth_.find(prop);
-    if (iter == truth_.end()) {
-      // prop not assigned
-      return EVAL_UNDECIDED;
-    } else {
-      // prop assigned
-      return iter->second ? EVAL_SAT : EVAL_UNSAT;
-    }
+  Assignment(size_t props = 1) {
+    truth_.resize(props + 1);
+    truth_.fill(EVAL_UNDECIDED);
   }
 
-  void assign(const Proposition &prop, bool truth) {
+  Evaluation get(const Proposition &prop) const {
+    return truth_[prop];
+  }
+
+  void assign(const Proposition &prop, Evaluation truth) {
     truth_[prop] = truth;
   }
 
   void remove(const Proposition &prop) {
-    truth_.erase(prop);
+    truth_[prop] = EVAL_UNDECIDED;
   }
 
   std::string to_string() const {
     std::stringstream ss;
-    for (auto iter : truth_) {
-      if (iter.second) {
-        ss << iter.first << " : " << iter.second << std::endl;
+    for (size_t i = 1; i <= truth_.size(); ++i) {
+      if (truth_[i] == EVAL_SAT) {
+        ss << i << " ";
       }
     }
+    ss << std::endl;
     return ss.str();
   }
 
  private:
-  std::unordered_map<Proposition, bool> truth_;
+  Path<Evaluation> truth_;
 };
 
 }  // namespace tiny_sat
