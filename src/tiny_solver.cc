@@ -1,8 +1,6 @@
 #include "solver.h"
-#include <signal.h>
 
-#include <algorithm>
-#include <map>
+#include <iostream>
 
 #define TINY_SOLVER_DEBUG 0
 

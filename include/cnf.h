@@ -2,7 +2,6 @@
 #define TINY_SAT_CNF_H
 
 #include "clause.h"
-#include "path.h"
 
 namespace tiny_sat {
 
@@ -16,13 +15,6 @@ class CNF {
 
   const Clause &get(size_t index) const {
     return this->clauses_[index];
-  }
-
-  void get_clauses(Proposition &prop, std::vector<size_t> &clauses) const {
-    auto iter = this->props_.find(prop);
-    if (iter != this->props_.end()) {
-      clauses = iter->second;
-    }
   }
 
   std::vector<Clause>::iterator begin() {
@@ -43,16 +35,10 @@ class CNF {
 
   void add(const Clause &clause) {
     clauses_.push_back(clause);
-    for (auto iter = clause.begin(); iter != clause.end(); ++iter) {
-      props_[iter->prop()].push_back(clauses_.size() - 1);
-    }
   }
 
   void add(const Clause &&clause) {
     clauses_.emplace_back(clause);
-    for (auto iter = clause.begin(); iter != clause.end(); ++iter) {
-      props_[iter->prop()].push_back(clauses_.size() - 1);
-    }
   }
 
   Evaluation eval(const Assignment &assignment) const {
@@ -68,36 +54,6 @@ class CNF {
     return undecided ? EVAL_UNDECIDED : EVAL_SAT;
   }
 
-  Evaluation eval(const Assignment &assignment, const Proposition &prop,
-    const Path<bool> &determined, Path<size_t> &sats) const {
-    bool unsat = false;
-    bool undecided = false;
-    auto iter = props_.find(prop);
-    for (size_t i : iter->second) {
-      if (determined[i]) {
-        continue;
-      }
-      auto &clause = clauses_[i];
-      auto ret = clause.eval(assignment);
-      if (ret == EVAL_UNSAT) {
-        unsat = true;
-      } else if (ret == EVAL_UNDECIDED) {
-        undecided = true;
-      } else {
-        sats.push_back(i);
-      }
-    }
-    return unsat ? EVAL_UNSAT : (undecided ? EVAL_UNDECIDED : EVAL_SAT);
-  }
-
-  std::vector<Proposition> props() const {
-    std::vector<Proposition> prop_vec;
-    for (auto iter : props_) {
-      prop_vec.push_back(iter.first);
-    }
-    return prop_vec;
-  }
-
   std::string to_string() const {
     std::stringstream ss;
     for (auto &clause : clauses_) {
@@ -108,8 +64,6 @@ class CNF {
    
  private:
   std::vector<Clause> clauses_;
-  // Proposition->clause index
-  std::map<Proposition, std::vector<size_t> > props_;
 };
 
 }  // namespace tiny_sat

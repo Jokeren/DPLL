@@ -90,7 +90,7 @@ class TinySolver : public Solver {
  private:
   Path<double> prop_scores_sat_;
   Path<double> prop_scores_unsat_;
-  std::vector<double> pows_;
+  Path<double> pows_;
 };
 
 }  // namespace tiny_sat

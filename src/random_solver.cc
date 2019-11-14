@@ -1,7 +1,6 @@
 #include "solver.h"
 
 #include <random>
-#include <iostream>
 
 namespace tiny_sat {
 

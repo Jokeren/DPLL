@@ -1,8 +1,6 @@
 #include "database.h"
 #include "solver.h"
 
-#include <map>
-
 namespace tiny_sat {
 
 void TwoClauseSolver::init(const CNF &cnf) {

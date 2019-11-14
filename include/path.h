@@ -1,8 +1,6 @@
 #ifndef TINY_SAT_PATH_H
 #define TINY_SAT_PATH_H
 
-#include <iostream>
-
 namespace tiny_sat {
 
 template <typename T>
@@ -16,22 +14,19 @@ class Path {
     return this->size_;
   }
 
-  T get(size_t index) const {
-    return entries_[index];
-  }
-
   void push_back(const T &value) {
     entries_[size_++] = value;
     if (size_ == capacity_) {
       reserve(capacity_ * 2);
     }
-#if 0
-    std::cout << "size_ " << size_ << " capacity " << capacity_ <<  " value " << value << std::endl;
-#endif
   }
 
   T pop_back() {
     return entries_[--size_];
+  }
+
+  T get(size_t index) const {
+    return entries_[index];
   }
 
   T &operator[](size_t index) {
