@@ -10,7 +10,8 @@ void TwoClauseSolver::init(const CNF &cnf) {
 }
 
 
-Proposition TwoClauseSolver::choose(Assignment &assign) {
+Proposition TwoClauseSolver::choose(Assignment &assign,
+  Evaluation &eval_first, Evaluation &eval_second) {
   Proposition prop = 0;
   size_t max_clause = 0;
   two_clause_props_.clear();
@@ -45,6 +46,16 @@ Proposition TwoClauseSolver::choose(Assignment &assign) {
     std::uniform_int_distribution<size_t> distribution(0, candidates_.size() - 1);
     auto index = distribution(generator_);
     prop = candidates_[index];
+  }
+
+  // Random choose true and false order
+  std::uniform_int_distribution<int> dist_evals(0, 1);
+  if (dist_evals(generator_) == 0) {
+    eval_first = EVAL_SAT;
+    eval_second = EVAL_UNSAT;
+  } else {
+    eval_first = EVAL_UNSAT;
+    eval_second = EVAL_SAT;
   }
 
   return prop;

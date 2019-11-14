@@ -21,18 +21,8 @@ bool Solver::solve_impl(Assignment &assign, Proposition prop) {
   }
 
   // Next turn
-  prop = this->choose(assign);
-  std::uniform_int_distribution<int> distribution(0, 1);
-
-  // Random choose true and false order
   Evaluation eval_first, eval_second;
-  if (distribution(generator_) == 0) {
-    eval_first = EVAL_SAT;
-    eval_second = EVAL_UNSAT;
-  } else {
-    eval_first = EVAL_UNSAT;
-    eval_second = EVAL_SAT;
-  }
+  prop = this->choose(assign, eval_first, eval_second);
 
   assign.assign(prop, eval_first);
   if (solve_impl(assign, prop)) {

@@ -5,6 +5,8 @@
 #include <vector>
 #include <random>
 #include <set>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "assignment.h"
 #include "cnf.h"
@@ -37,7 +39,8 @@ class Solver {
  protected:
   virtual void init(const CNF &cnf) = 0;
 
-  virtual Proposition choose(Assignment &assign) = 0;
+  virtual Proposition choose(Assignment &assign,
+    Evaluation &eval_first, Evaluation &eval_second) = 0;
  
  protected:
   SolverType type_;
@@ -53,7 +56,8 @@ class RandomSolver : public Solver {
  protected:
   virtual void init(const CNF &cnf);
 
-  virtual Proposition choose(Assignment &assign);
+  virtual Proposition choose(Assignment &assign,
+    Evaluation &eval_first, Evaluation &eval_second);
 };
 
 
@@ -64,10 +68,11 @@ class TwoClauseSolver : public Solver {
  protected:
   virtual void init(const CNF &cnf);
 
-  virtual Proposition choose(Assignment &assign);
+  virtual Proposition choose(Assignment &assign,
+    Evaluation &eval_first, Evaluation &eval_second);
 
  private:
-  std::map<Proposition, size_t> two_clause_props_;
+  std::unordered_map<Proposition, size_t> two_clause_props_;
   std::vector<Proposition> candidates_;
 };
 
@@ -79,7 +84,12 @@ class TinySolver : public Solver {
  protected:
   virtual void init(const CNF &cnf);
 
-  virtual Proposition choose(Assignment &assign);
+  virtual Proposition choose(Assignment &assign,
+    Evaluation &eval_first, Evaluation &eval_second);
+
+ private:
+  std::unordered_map<Proposition, double> prop_scores_sat_;
+  std::unordered_map<Proposition, double> prop_scores_unsat_;
 };
 
 }  // namespace tiny_sat

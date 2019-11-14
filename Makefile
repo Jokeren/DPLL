@@ -35,8 +35,12 @@ OFLAGS += -mtune=$(TUNE)
 endif
 endif
 
+ifdef JEMALLOC
+LD_JEMALLOC = -L$(JEMALLOC) -ljemalloc
+endif
+
 CFLAGS := -std=c++11 $(OFLAGS)
-LDFLAGS := -lstdc++
+LDFLAGS := -lstdc++ $(LD_JEMALLOC)
 SRCS := $(shell find src -maxdepth 3 -name "*.cc")
 OBJECTS := $(addprefix $(BUILD_DIR), $(patsubst %.cc, %.o, $(SRCS)))
 OBJECTS_DIR := $(sort $(addprefix $(BUILD_DIR), $(dir $(SRCS))))

@@ -21,7 +21,6 @@ class Database {
 
   void init(const CNF &cnf);
 
-
   bool satisfy() const {
     return clauses_.size() == 0;
   }
