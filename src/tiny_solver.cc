@@ -41,8 +41,20 @@ Proposition TinySolver::choose_unit(Assignment &assign, Evaluation &eval) {
     if (undecided == 1) {
       if (liter_undecide->positive()) {
         prop_scores_sat_[liter_undecide->prop()] += this->pows_[undecided];
+        //if (prop_scores_unsat_[liter_undecide->prop()] != 0.0) {
+        //  // resolution rule
+        //  eval = EVAL_UNDECIDED;
+        //  // prop cannot be zero
+        //  return prop;
+        //}
       } else {
         prop_scores_unsat_[liter_undecide->prop()] += this->pows_[undecided];
+        //if (prop_scores_sat_[liter_undecide->prop()] != 0.0) {
+        //  // resolution rule
+        //  eval = EVAL_UNDECIDED;
+        //  // prop cannot be zero
+        //  return prop;
+        //}
       }
       double score = prop_scores_sat_[liter_undecide->prop()] +
         prop_scores_unsat_[liter_undecide->prop()];

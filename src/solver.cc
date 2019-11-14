@@ -25,10 +25,12 @@ bool Solver::solve_impl(Assignment &assign, Proposition prop) {
   Evaluation eval_first, eval_second;
   prop = this->choose_unit(assign, eval_first);
   if (prop != 0) {
-    assign.assign(prop, eval_first);
-    if (solve_impl(assign, prop)) {
-      db_.rollback();
-      return true;
+    if (eval_first != EVAL_UNDECIDED) {
+      assign.assign(prop, eval_first);
+      if (solve_impl(assign, prop)) {
+        db_.rollback();
+        return true;
+      }
     }
   } else {
     // If a unit clause is not found
