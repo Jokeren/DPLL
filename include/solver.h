@@ -39,7 +39,9 @@ class Solver {
  protected:
   virtual void init(const CNF &cnf) = 0;
 
-  virtual Proposition choose(Assignment &assign,
+  virtual Proposition choose_unit(Assignment &assign, Evaluation &eval) = 0;
+
+  virtual Proposition choose_split(Assignment &assign,
     Evaluation &eval_first, Evaluation &eval_second) = 0;
  
  protected:
@@ -56,8 +58,13 @@ class RandomSolver : public Solver {
  protected:
   virtual void init(const CNF &cnf);
 
-  virtual Proposition choose(Assignment &assign,
+  virtual Proposition choose_unit(Assignment &assign, Evaluation &eval);
+
+  virtual Proposition choose_split(Assignment &assign,
     Evaluation &eval_first, Evaluation &eval_second);
+
+ private:
+  std::set<std::pair<Proposition, bool>> unit_candidates_;
 };
 
 
@@ -68,12 +75,15 @@ class TwoClauseSolver : public Solver {
  protected:
   virtual void init(const CNF &cnf);
 
-  virtual Proposition choose(Assignment &assign,
+  virtual Proposition choose_unit(Assignment &assign, Evaluation &eval);
+
+  virtual Proposition choose_split(Assignment &assign,
     Evaluation &eval_first, Evaluation &eval_second);
 
  private:
   std::unordered_map<Proposition, size_t> two_clause_props_;
-  std::vector<Proposition> candidates_;
+  std::set<std::pair<Proposition, bool>> unit_candidates_;
+  std::vector<Proposition> two_clause_candidates_;
 };
 
 
@@ -84,7 +94,9 @@ class TinySolver : public Solver {
  protected:
   virtual void init(const CNF &cnf);
 
-  virtual Proposition choose(Assignment &assign,
+  virtual Proposition choose_unit(Assignment &assign, Evaluation &eval);
+
+  virtual Proposition choose_split(Assignment &assign,
     Evaluation &eval_first, Evaluation &eval_second);
 
  private:

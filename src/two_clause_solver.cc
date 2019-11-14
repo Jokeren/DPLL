@@ -8,7 +8,44 @@ void TwoClauseSolver::init(const CNF &cnf) {
 }
 
 
-Proposition TwoClauseSolver::choose(Assignment &assign,
+Proposition TwoClauseSolver::choose_unit(Assignment &assign, Evaluation &eval) {
+  Proposition prop = 0;
+  unit_candidates_.clear();
+  // propagate unit literal first
+  for (auto iter = db_.clauses().begin(); iter != db_.clauses().end(); ++iter) {
+    auto *clause = *iter;
+    int undecided = 0;
+    auto liter_undecide = clause->begin();
+    for (auto liter = clause->begin(); liter != clause->end(); ++liter) {
+      if (assign.get(liter->prop()) == EVAL_UNDECIDED) {
+        liter_undecide = liter;
+        ++undecided;
+      }
+    }
+    if (undecided == 1) {
+      unit_candidates_.insert(std::pair<Proposition, bool>(
+        liter_undecide->prop(), liter_undecide->positive()));
+    }
+  }
+
+  if (unit_candidates_.size() != 0) {
+    std::uniform_int_distribution<size_t> dist_props(0, unit_candidates_.size() - 1);
+    size_t index = dist_props(generator_);
+    auto it = std::next(std::begin(unit_candidates_), index);
+    prop = it->first;
+
+    if (it->second == true) {
+      eval = EVAL_SAT;
+    } else {
+      eval = EVAL_UNSAT;
+    }
+  }
+
+  return prop;
+}
+
+
+Proposition TwoClauseSolver::choose_split(Assignment &assign,
   Evaluation &eval_first, Evaluation &eval_second) {
   Proposition prop = 0;
   size_t max_clause = 0;
@@ -33,17 +70,18 @@ Proposition TwoClauseSolver::choose(Assignment &assign,
     }
   }
 
-  candidates_.clear();
+  two_clause_candidates_.clear();
   for (auto &iter : two_clause_props_) {
     if (iter.second == max_clause) {
-      candidates_.push_back(iter.first);
+      two_clause_candidates_.push_back(iter.first);
     }
   }
 
-  if (candidates_.size() != 0) {
-    std::uniform_int_distribution<size_t> distribution(0, candidates_.size() - 1);
+  if (two_clause_candidates_.size() != 0) {
+    std::uniform_int_distribution<size_t> distribution(0,
+      two_clause_candidates_.size() - 1);
     auto index = distribution(generator_);
-    prop = candidates_[index];
+    prop = two_clause_candidates_[index];
   }
 
   // Random choose true and false order

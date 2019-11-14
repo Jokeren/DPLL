@@ -50,7 +50,7 @@ Evaluation Database::eval(Proposition prop, Assignment &assignment) {
       // move pointer
       if (!active) {
         clauses_.erase(clause);
-        free_clauses.second.push_back(clause);
+        free_clauses.second.emplace_back(clause);
       }
     }
   }

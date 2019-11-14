@@ -3,6 +3,7 @@
 #include <iostream>
 
 #define TINY_SOLVER_DEBUG 0
+#define POLARITY_DEBUG 0
 
 namespace tiny_sat {
 
@@ -21,14 +22,12 @@ void TinySolver::init(const CNF &cnf) {
 }
 
 
-Proposition TinySolver::choose(Assignment &assign,
-  Evaluation &eval_first, Evaluation &eval_second) {
+Proposition TinySolver::choose_unit(Assignment &assign, Evaluation &eval) {
   Proposition prop = 0;
   double max_score = 0.0;
   prop_scores_sat_.fill(0.0);
   prop_scores_unsat_.fill(0.0);
 
-  // propagate unit literal first
   for (auto iter = db_.clauses().begin(); iter != db_.clauses().end(); ++iter) {
     auto *clause = *iter;
     int undecided = 0;
@@ -60,21 +59,25 @@ Proposition TinySolver::choose(Assignment &assign,
       std::cout << "Choose: " << prop << ", Positive score: " <<
         prop_scores_sat_[prop] << ", Negative score: " << prop_scores_unsat_[prop] << std::endl;
     }
-
     // Evaluate frequent one first
     if (prop_scores_sat_[prop] > prop_scores_unsat_[prop]) {
-      eval_first = EVAL_SAT;
-      eval_second = EVAL_UNSAT;
+      eval = EVAL_SAT;
     } else {
-      eval_first = EVAL_UNSAT;
-      eval_second = EVAL_SAT;
+      eval = EVAL_UNSAT;
     }
-
-    return prop;
   }
 
+  return prop;
+}
+
+
+Proposition TinySolver::choose_split(Assignment &assign,
+  Evaluation &eval_first, Evaluation &eval_second) {
+  Proposition prop = 0;
+  double max_score = 0.0;
   prop_scores_sat_.fill(0.0);
   prop_scores_unsat_.fill(0.0);
+
   // non-unit 
   for (auto iter = db_.clauses().begin(); iter != db_.clauses().end(); ++iter) {
     auto *clause = *iter;
@@ -110,18 +113,51 @@ Proposition TinySolver::choose(Assignment &assign,
     }
   }
 
+  max_score = 0.0;
+  if (POLARITY_DEBUG) {
+    // Polarity does not work well
+    // Choose polarity
+    for (auto iter = db_.props().begin(); iter != db_.props().end(); ++iter) {
+      auto p = *iter;
+      if (prop_scores_sat_[p] == 0.0 && prop_scores_unsat_[p] != 0.0) {
+        if (prop_scores_unsat_[p] > max_score) {
+          // Ensure at least one proposition is selected
+          prop = p;
+          max_score = prop_scores_unsat_[p];
+        }
+      } else if (prop_scores_sat_[p] != 0.0 && prop_scores_unsat_[p] == 0.0) {
+        if (prop_scores_sat_[p] > max_score) {
+          // Ensure at least one proposition is selected
+          prop = p;
+          max_score = prop_scores_sat_[p];
+        }
+      }
+    }
+  }
+
+  if (max_score == 0.0) {
+    // Evaluate frequent one first
+    if (prop_scores_sat_[prop] > prop_scores_unsat_[prop]) {
+      eval_first = EVAL_SAT;
+      eval_second = EVAL_UNSAT;
+    } else {
+      eval_first = EVAL_UNSAT;
+      eval_second = EVAL_SAT;
+    }
+  } else {
+    // Do not execute another branch
+    if (prop_scores_sat_[prop] > prop_scores_unsat_[prop]) {
+      eval_first = EVAL_SAT;
+      eval_second = EVAL_UNDECIDED;
+    } else {
+      eval_first = EVAL_UNSAT;
+      eval_second = EVAL_UNDECIDED;
+    }
+  }
+
   if (TINY_SOLVER_DEBUG) {
     std::cout << "Choose: " << prop << ", Positive score: " <<
       prop_scores_sat_[prop] << ", Negative score: " << prop_scores_unsat_[prop] << std::endl;
-  }
-
-  // Evaluate frequent one first
-  if (prop_scores_sat_[prop] > prop_scores_unsat_[prop]) {
-    eval_first = EVAL_SAT;
-    eval_second = EVAL_UNSAT;
-  } else {
-    eval_first = EVAL_UNSAT;
-    eval_second = EVAL_SAT;
   }
 
   return prop;
