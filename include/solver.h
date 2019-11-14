@@ -88,8 +88,9 @@ class TinySolver : public Solver {
     Evaluation &eval_first, Evaluation &eval_second);
 
  private:
-  std::unordered_map<Proposition, double> prop_scores_sat_;
-  std::unordered_map<Proposition, double> prop_scores_unsat_;
+  Path<double> prop_scores_sat_;
+  Path<double> prop_scores_unsat_;
+  std::vector<double> pows_;
 };
 
 }  // namespace tiny_sat

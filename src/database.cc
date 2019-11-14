@@ -18,7 +18,7 @@ void Database::init(const CNF &cnf) {
       props_.insert(iter->prop());
       prop_clauses_[iter->prop()].emplace_back(clause);
     }
-  } 
+  }
 }
 
 
