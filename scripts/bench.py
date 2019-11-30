@@ -19,7 +19,7 @@ class Command(object):
             self.process.terminate()
             thread.join()
 
-N = [100, 150, 200]
+N = [100, 150]
 S = ["random", "two", "tiny"]
 command = Command()
 
@@ -29,7 +29,7 @@ for n in N:
         while R <= 6.0:
             L = int(R * n)
             P = "p" + str(n) + "c" + str(L) + "l3.cnf"
-            sh = "./tiny_sat -i extern/data/" + "p" + str(n) + "/" + P + " -s " + s
+            sh = "time ./tiny_sat -i extern/data/" + "p" + str(n) + "/" + P + " -s " + s
             print sh
-            command.run(sh, timeout=60);
+            command.run(sh, timeout=10.0);
             R += 0.2
