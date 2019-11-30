@@ -5,6 +5,8 @@ namespace tiny_sat {
 
 
 bool Solver::solve_impl(Assignment &assign, Proposition prop) {
+  ++this->calls_;
+
   // Skip first assign
   if (prop != 0) {
     // Cut determined clauses

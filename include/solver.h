@@ -36,6 +36,10 @@ class Solver {
     return this->type_;
   }
 
+  virtual size_t calls() {
+    return this->calls_;
+  }
+
  protected:
   virtual void init(const CNF &cnf) = 0;
 
@@ -48,6 +52,7 @@ class Solver {
   SolverType type_;
   Database db_;
   std::mt19937 generator_;
+  size_t calls_;
 };
 
 

@@ -60,18 +60,19 @@ int main(int argc, char *argv[]) {
       tiny_sat::CNF cnf;
       dimacs.read(cnf);
 #ifdef DEBUG
-      TINY_SAT_LOG_INFO("Debug cnf", ("\n" + cnf.to_string()).c_str());
+      TINY_SAT_LOG_INFO("Debug cnf", (cnf.to_string()).c_str());
 #endif
       tiny_sat::Solver *solver = get_solver(solver_name);
       tiny_sat::Assignment assign(cnf.size());
       if (solver->solve(cnf, assign)) {
-        TINY_SAT_LOG_INFO("Result", ("\n" + assign.to_string()).c_str());
+        TINY_SAT_LOG_INFO("Result", (assign.to_string()).c_str());
       } else {
 #ifdef DEBUG
-        TINY_SAT_LOG_INFO("Debug assignment", ("\n" + assign.to_string()).c_str());
+        TINY_SAT_LOG_INFO("Debug assignment", (assign.to_string()).c_str());
 #endif
         TINY_SAT_LOG_INFO("Result", "UNSAT");
       }
+      TINY_SAT_LOG_INFO("Calls", (std::to_string(solver->calls())).c_str());
     }  
   } else {
     int propositions = result["p"].count() ? result["p"].as<int>() : result["propositions"].as<int>();
