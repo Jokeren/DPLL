@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     TINY_SAT_LOG_INFO("Help", options.help().c_str());
     return 0;
   } else if (input.size() != 0) {
-    // Golver mode
+    // Solver mode
     std::string solver_name = result["s"].count() ? result["s"].as<std::string>() : result["solver"].as<std::string>();
     tiny_sat::DIMACS dimacs;
     if (dimacs.open(input)) {

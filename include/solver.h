@@ -26,7 +26,7 @@ enum SolverType {
 
 class Solver {
  public:
-  explicit Solver(SolverType type) : type_(type) {}
+  explicit Solver(SolverType type) : type_(type), generator_(std::random_device()()) {}
 
   virtual bool solve(const CNF &cnf, Assignment &assign);
 
