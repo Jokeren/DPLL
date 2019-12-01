@@ -64,6 +64,11 @@ int main(int argc, char *argv[]) {
 #endif
       tiny_sat::Solver *solver = get_solver(solver_name);
       tiny_sat::Assignment assign(cnf.size());
+
+      double elapsed_time = 0.0;
+      struct timeval t1, t2;
+      TINY_SAT_TIMER_START(elapsed_time, t1);
+
       if (solver->solve(cnf, assign)) {
         TINY_SAT_LOG_INFO("Result", (assign.to_string()).c_str());
       } else {
@@ -73,6 +78,9 @@ int main(int argc, char *argv[]) {
         TINY_SAT_LOG_INFO("Result", "UNSAT");
       }
       TINY_SAT_LOG_INFO("Calls", (std::to_string(solver->calls())).c_str());
+
+      TINY_SAT_TIMER_END(elapsed_time, t1, t2);
+      TINY_SAT_LOG_INFO("Time", (std::to_string(elapsed_time)).c_str());
     }  
   } else {
     int propositions = result["p"].count() ? result["p"].as<int>() : result["propositions"].as<int>();

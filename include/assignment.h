@@ -36,7 +36,6 @@ class Assignment {
         ss << i << " ";
       }
     }
-    ss << std::endl;
     return ss.str();
   }
 

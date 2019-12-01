@@ -1,6 +1,7 @@
 #!/bin/python
 
 import subprocess, threading
+import os
 
 class Command(object):
     def __init__(self):
@@ -19,17 +20,17 @@ class Command(object):
             self.process.terminate()
             thread.join()
 
-N = [100, 150]
+N = [125, 150]
 S = ["random", "two", "tiny"]
 command = Command()
 
 for n in N:
     for s in S:
-        R = 3.0
-        while R <= 6.0:
-            L = int(R * n)
+        R = 30
+        while R <= 60:
+            L = R * n / 10
             P = "p" + str(n) + "c" + str(L) + "l3.cnf"
-            sh = "time ./tiny_sat -i extern/data/" + "p" + str(n) + "/" + P + " -s " + s
-            print sh
-            command.run(sh, timeout=10.0);
-            R += 0.2
+            sh = "./tiny_sat -i extern/data/" + "p" + str(n) + "/" + P + " -s " + s
+            os.system("echo " + sh)
+            command.run(sh, timeout=60.0)
+            R += 2
