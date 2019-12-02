@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#define TINY_SOLVER_DEBUG 1
-#define POLARITY_DEBUG 0
+#define TINY_SOLVER_DEBUG 0
+#define POLARITY_DEBUG 1
 
 namespace tiny_sat {
 

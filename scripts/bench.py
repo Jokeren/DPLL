@@ -15,10 +15,9 @@ class Command:
             if calls is not None:
                 if stdout.find("-->") != -1:
                     split = stdout.split("\n")
-                    s = split[0].split("-->")[1]
                     c = split[1].split("-->")[1]
                     t = split[2].split("-->")[1]
-                    if s.find("UNSAT") != -1:
+                    if split[0].find("UNSAT") != -1:
                         sats.append("UNSAT")
                     else:
                         sats.append("SAT")
@@ -26,7 +25,7 @@ class Command:
                     times.append(float(t))
                 else:
                     sats.append("UNSAT")
-                    calls.append(timeout)
+                    calls.append(1 << 30)
                     times.append(timeout)
 
         thread = threading.Thread(target=target)
