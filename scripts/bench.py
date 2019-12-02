@@ -8,9 +8,9 @@ class Command:
     def __init__(self):
         self._process = None
 
-    def run(self, cmd, calls=None, times=None, timeout=1):
+    def run(self, cmd, calls=None, times=None, timeout=10):
         def target():
-            self._process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
+            self._process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
             stdout, stderr = self._process.communicate()
             if calls is not None:
                 if stdout.find("-->") != -1:
@@ -73,7 +73,6 @@ for n in N:
 
             for s in S:
                 sh = "./tiny_sat -i tmp.cnf -s " + s
-                os.system(sh)
 
                 if s == "random":
                     calls = random_calls
