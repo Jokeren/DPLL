@@ -87,7 +87,7 @@ void DIMACS::read(CNF &cnf) {
 
 
 void DIMACS::generate(int propositions, int clauses, int literals) {
-  std::mt19937 generator;
+  std::mt19937 generator(std::random_device{}());
   std::uniform_int_distribution<int> distribution(-propositions, propositions);
   std::set<std::set<int> > dict;
   std::set<int> clause;

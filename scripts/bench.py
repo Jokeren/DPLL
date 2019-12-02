@@ -1,14 +1,22 @@
-#!/bin/python
+#!/usr/bin/python3
 
 import subprocess, threading
-import os
+import os, signal
 import sys
 
-def run(cmd, calls=None, times=None, timeout=60.0):
-    process = None
-    def target():
+class Command:
+    def __init__(self):
+        return
+
+    def run(self, cmd, calls=None, times=None, timeout=1):
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        stdout, stderr = process.communicate()
+        try:
+            stdout, stderr = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            stdout, stderr = process.communicate()
+        stdout = stdout.decode("utf-8") 
+
         if calls is not None:
             if stdout.find("-->") != -1:
                 split = stdout.split("\n")
@@ -20,50 +28,71 @@ def run(cmd, calls=None, times=None, timeout=60.0):
                 calls.append(timeout)
                 times.append(timeout)
 
-    thread = threading.Thread(target=target)
-    thread.start()
-
-    thread.join(timeout)
-    if thread.is_alive():
-        process.terminate()
-        thread.join()
-
 def median(array):
     length = len(array)
     if length % 2 == 1:
-        return array[length / 2]
+        return array[int(length / 2)]
     else:
-        return (array[length / 2] + array[length / 2 - 1]) / 2.0
+        return (array[int(length / 2)] + array[int(length / 2) - 1]) / 2.0
+    
 
-N = [100, 150]
+def report(prefix, calls, times):
+    o = prefix + ": calls: [" + str(calls[0]) + "," + str(median(calls)) + "," + str(calls[-1]) + "]"
+    os.system("echo " + o)
+    o = prefix + ": times: [" + str(times[0]) + "," + str(median(times)) + "," + str(times[-1]) + "]"
+    os.system("echo " + o)
+
+
+N = [150]
 S = ["random", "two", "tiny"]
 R = 60
+cmd = Command()
 
 for n in N:
     r = 30
+
     while r <= 60:
-        l = r * n / 10
+        l = int(r * n / 10)
         r += 2
 
-        sh = "rm tmp.cnf"
-        run(sh)
-        sh = "./tiny_sat -o tmp.cnf -p " + str(n) + " -c " + str(l) + " -l 3"
-        run(sh)
-        print sh
+        random_calls = []
+        random_times = []
+        two_calls = []
+        two_times = []
+        tiny_calls = []
+        tiny_times = []
 
-        for s in S:
-            sh = "./tiny_sat -i tmp.cnf -s " + s
-            run(sh)
-            print sh
+        for i in range(10):
+            sh = "rm tmp.cnf"
+            os.system(sh)
+            sh = "./tiny_sat -o tmp.cnf -p " + str(n) + " -c " + str(l) + " -l 3"
+            os.system(sh)
 
-            calls = []
-            times = []
-            for i in range(10):
-                run(sh, calls, times)
+            for s in S:
+                sh = "./tiny_sat -i tmp.cnf -s " + s
+                os.system(sh)
 
-            calls.sort()
-            times.sort()
-            o = "calls: [" + str(calls[0]) + "," + str(median(calls)) + "," + str(calls[-1]) + "]"
-            print o
-            o = "times: [" + str(times[0]) + "," + str(median(times)) + "," + str(times[-1]) + "]"
-            print o
+                if s == "random":
+                    calls = random_calls
+                    times = random_times
+                elif s == "two":
+                    calls = two_calls
+                    times = two_times
+                else:
+                    calls = tiny_calls
+                    times = tiny_times
+
+                cmd.run(sh, calls, times)
+
+        random_calls.sort()
+        random_times.sort()
+        two_calls.sort()
+        two_times.sort()
+        tiny_calls.sort()
+        tiny_times.sort()
+
+        sh = "./tiny_sat -p " + str(n) + " -c " + str(l) + " -l 3"
+        os.system("echo " + sh)
+        report("random", random_calls, random_times)
+        report("two", two_calls, two_times)
+        report("tiny", tiny_calls, tiny_times)
