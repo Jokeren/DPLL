@@ -1,32 +1,35 @@
-#!/usr/bin/python3
+#!/bin/python
 
 import subprocess, threading
-import os, signal
+import os
 import sys
 
 class Command:
     def __init__(self):
-        return
+        self._process = None
 
     def run(self, cmd, calls=None, times=None, timeout=1):
-        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        try:
-            stdout, stderr = process.communicate(timeout=timeout)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            stdout, stderr = process.communicate()
-        stdout = stdout.decode("utf-8") 
+        def target():
+            self._process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
+            stdout, stderr = self._process.communicate()
+            if calls is not None:
+                if stdout.find("-->") != -1:
+                    split = stdout.split("\n")
+                    c = split[1].split("-->")[1]
+                    t = split[2].split("-->")[1]
+                    calls.append(float(c))
+                    times.append(float(t))
+                else:
+                    calls.append(timeout)
+                    times.append(timeout)
 
-        if calls is not None:
-            if stdout.find("-->") != -1:
-                split = stdout.split("\n")
-                c = split[1].split("-->")[1]
-                t = split[2].split("-->")[1]
-                calls.append(float(c))
-                times.append(float(t))
-            else:
-                calls.append(timeout)
-                times.append(timeout)
+        thread = threading.Thread(target=target)
+        thread.start()
+
+        thread.join(timeout)
+        if thread.is_alive():
+            self._process.terminate()
+            thread.join()
 
 def median(array):
     length = len(array)
